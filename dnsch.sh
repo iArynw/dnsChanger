@@ -1,10 +1,13 @@
 #!/bin/bash
 
-# Check if the script is run as root
+# Check if the script is run with superuser privileges
 if [[ $EUID -ne 0 ]]; then
-   echo "This script must be run as root" 
+   echo "Error: This script requires superuser privileges to run properly."
+   echo "Please execute it with sudo or as root."
    exit 1
 fi
+
+
 
 # Backup the original resolv.conf file only if a backup doesn't exist yet
 if [[ ! -e /etc/resolv.conf.bak ]]; then
@@ -13,9 +16,15 @@ fi
 
 # Function to print usage instructions
 usage() {
-    echo "Usage: $0 {g|sh|ag|cf|403|bg|rd|el} [-c|--clear] [-s|--set] [-p|--ping]" # TODO: make this use the dnsList?
+    echo "Usage: sudo dnsch {g|sh|ag|cf|403|bg|rd|el} [-c|--clear] [-s|--set <IP1> <IP2>] [-p|--ping]"
+    echo "Options:"
+    echo "  {g|sh|ag|cf|403|bg|rd|el}: Specify the DNS server to use (e.g., g for Google, sh for Shecan)."
+    echo "  -c, --clear: Clear existing DNS settings."
+    echo "  -s, --set <IP1> <IP2>: Set custom DNS servers."
+    echo "  -p, --ping: Ping all DNS servers and display their average ping times."
     exit 1
 }
+
 
 # Function to calculate average ping time for a given DNS server
 get_average_ping() {
